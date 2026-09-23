@@ -1,0 +1,285 @@
+/* KantinKu - Natural Canteen Warm & Premium Modern Design System */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    
+    /* Premium Canteen Color Palette */
+    --color-primary: #16a34a;             /* Warm Emerald Green */
+    --color-primary-hover: #15803d;       /* Deep Emerald */
+    --color-primary-subtle: #f0fdf4;      /* Soft Mint Tint */
+    --color-primary-border: #bbf7d0;      /* Emerald Border Tint */
+    
+    --color-amber: #d97706;               /* Vibrant Amber Gold */
+    --color-amber-subtle: #fffbeb;        /* Soft Amber Tint */
+    
+    --color-canvas: #f8fafc;              /* Crisp Slate Floor */
+    --color-card-bg: #ffffff;             /* Pure White Card */
+    --color-hairline: #e2e8f0;            /* Clean Hairline Border */
+    
+    --color-ink-dark: #0f172a;            /* Deep Navy Slate Ink */
+    --color-ink-body: #334155;            /* Rich Body Text */
+    --color-ink-muted: #64748b;           /* Subtitle Slate */
+    
+    --shadow-soft: 0 6px 20px rgba(15, 23, 42, 0.04);
+    --shadow-hover: 0 12px 30px rgba(15, 23, 42, 0.09);
+    --shadow-modal: 0 20px 40px rgba(15, 23, 42, 0.15);
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--color-canvas);
+    color: var(--color-ink-body);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Strict Tab Pane Isolation */
+.tab-content > .tab-pane {
+    display: none;
+}
+.tab-content > .tab-pane.active,
+.tab-content > .tab-pane.show.active {
+    display: block !important;
+}
+
+/* Navbar Enhancements */
+.app-top-nav {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Primary Canteen Action Buttons */
+.btn-food-primary {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    padding: 0.58rem 1.45rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-food-primary:hover, .btn-food-primary:focus {
+    background-color: var(--color-primary-hover);
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(22, 163, 74, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-food-outline {
+    background-color: #ffffff;
+    color: var(--color-ink-dark);
+    border: 1.5px solid var(--color-hairline);
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.58rem 1.45rem;
+    transition: all 0.2s ease;
+}
+
+.btn-food-outline:hover {
+    background-color: #f1f5f9;
+    border-color: var(--color-ink-dark);
+    color: var(--color-ink-dark);
+    transform: translateY(-1px);
+}
+
+/* Category Filter Pills */
+.category-pill-food {
+    border: 1.5px solid var(--color-hairline);
+    background: #ffffff;
+    color: var(--color-ink-muted);
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 0.5rem 1.35rem;
+    border-radius: 50px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-pill-food:hover, .category-pill-food.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(22, 163, 74, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Product Card & Hover Effects */
+.card-food-hover {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--color-hairline) !important;
+}
+
+.card-food-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover) !important;
+    border-color: var(--color-primary-border) !important;
+}
+
+/* Modal UI Enhancements */
+.modal-content {
+    border-radius: 20px !important;
+    box-shadow: var(--shadow-modal) !important;
+    overflow: hidden;
+}
+
+.modal-header {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+}
+
+/* Custom Payment Option Card Design */
+.payment-option-card {
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    border: 1.5px solid var(--color-hairline) !important;
+    cursor: pointer;
+    user-select: none;
+}
+
+.payment-option-card:hover {
+    border-color: var(--color-primary-border) !important;
+    background-color: var(--color-primary-subtle);
+}
+
+.payment-option-card:has(input:checked),
+.payment-option-card.active {
+    border-color: var(--color-primary) !important;
+    background-color: var(--color-primary-subtle) !important;
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.12);
+}
+
+.payment-option-card input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.payment-option-card input[type="radio"]:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+/* Form Control Polish */
+.form-control, .form-select {
+    border-radius: 12px;
+    border: 1.5px solid var(--color-hairline);
+    padding: 0.65rem 1rem;
+    font-size: 0.92rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+/* Burger Button & Offcanvas Sidebar Drawer */
+.burger-btn {
+    border: 1.5px solid var(--color-hairline);
+    background: #ffffff;
+    color: var(--color-ink-dark);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.burger-btn:hover {
+    background-color: #f1f5f9;
+    border-color: var(--color-ink-dark);
+}
+
+.sidebar-offcanvas {
+    background-color: #0f172a;
+    color: #ffffff;
+    width: 290px !important;
+}
+
+.sidebar-brand-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu-list {
+    padding: 1.25rem 1rem;
+}
+
+.sidebar-section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    margin: 1rem 0.75rem 0.5rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.92rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    margin-bottom: 0.2rem;
+    transition: all 0.15s ease;
+}
+
+.sidebar-link i {
+    font-size: 1.1rem;
+    margin-right: 0.75rem;
+}
+
+.sidebar-link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-link.active {
+    color: #ffffff;
+    background-color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* Floating Cart Button */
+.floating-cart-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1040;
+}
+
+.btn-floating-cart {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 10px 25px rgba(22, 163, 74, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-floating-cart:hover {
+    transform: scale(1.08);
+    background-color: var(--color-primary-hover);
+    color: #ffffff;
+}
+
+/* Utilities & Typography */
+.cursor-pointer {
+    cursor: pointer;
+}

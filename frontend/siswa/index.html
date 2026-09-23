@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KantinKu - Portal Siswa</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style System -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Side Navbar Offcanvas Drawer untuk Siswa -->
+<div class="offcanvas offcanvas-start sidebar-offcanvas" tabindex="-1" id="siswaSidebarOffcanvas">
+    <div class="sidebar-brand-header d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <div class="bg-danger bg-opacity-20 text-danger rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-shop fs-5"></i>
+            </div>
+            <div>
+                <h5 class="fw-bold text-white mb-0">KantinKu</h5>
+                <small class="text-muted d-block" style="font-size: 0.7rem; letter-spacing: 0.05em;">STUDENT PORTAL</small>
+            </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body sidebar-menu-list">
+        <!-- Student Info Box -->
+        <div class="p-3 mb-3 bg-white bg-opacity-10 rounded-3 d-flex align-items-center">
+            <div class="user-avatar-circle me-3 bg-danger text-white rounded-circle d-flex align-items-center justify-content-center fw-bold student-avatar-char" style="width: 38px; height: 38px;">
+                S
+            </div>
+            <div>
+                <span class="d-block fw-bold text-white leading-none small student-name-display">Siswa</span>
+                <small class="text-success fw-semibold" style="font-size: 0.7rem;">Siswa Terdaftar</small>
+            </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigasi Utama</div>
+        <a href="javascript:void(0)" class="sidebar-link active" onclick="switchSiswaTab('katalog-tab')">
+            <i class="bi bi-bag-heart-fill text-warning"></i>Dashboard Belanjaan
+        </a>
+        <a href="javascript:void(0)" class="sidebar-link" data-bs-toggle="modal" data-bs-target="#cartModal" data-bs-dismiss="offcanvas">
+            <i class="bi bi-cart3 text-info"></i>Keranjang Saya (<span id="sidebar-cart-count">0</span>)
+        </a>
+        <a href="javascript:void(0)" class="sidebar-link" onclick="switchSiswaTab('riwayat-tab')">
+            <i class="bi bi-clock-history text-primary"></i>Riwayat Pembelian (<span class="my-orders-count">0</span>)
+        </a>
+
+        <div class="sidebar-section-title mt-4">Akses Sistem</div>
+        <a href="../../index.html" class="sidebar-link">
+            <i class="bi bi-house"></i>Beranda Utama
+        </a>
+        <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-link text-danger">
+            <i class="bi bi-box-arrow-right"></i>Keluar / Logout
+        </a>
+    </div>
+</div>
+
+<!-- Header Navbar Top Navigation Tabs -->
+<header class="app-top-nav sticky-top bg-white border-bottom py-2">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button class="burger-btn me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#siswaSidebarOffcanvas" title="Buka Sidebar Navigasi">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+
+                <a href="../../index.html" class="text-decoration-none d-flex align-items-center">
+                    <span class="fs-4 me-2" style="color: var(--color-food-primary);">🍱</span>
+                    <div>
+                        <h5 class="fw-bold text-dark mb-0 leading-none">KantinKu</h5>
+                        <small class="text-muted d-block" style="font-size: 0.72rem;">Portal Siswa</small>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="nav d-none d-md-flex align-items-center gap-2" role="tablist">
+                <button class="nav-product-tab active border-0 bg-transparent" id="katalog-tab" type="button" onclick="switchSiswaTab('katalog-tab')">
+                    Katalog Menu
+                </button>
+                <button class="nav-product-tab border-0 bg-transparent" id="riwayat-tab" type="button" onclick="switchSiswaTab('riwayat-tab')">
+                    Riwayat Pesanan (<span class="my-orders-count">0</span>)
+                </button>
+            </div>
+
+            <!-- User Actions Right -->
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-food-primary btn-sm" data-bs-toggle="modal" data-bs-target="#cartModal">
+                    <i class="bi bi-cart3 me-1"></i>Keranjang (<span id="cart-badge-count">0</span>)
+                </button>
+
+                <span class="small fw-semibold text-dark d-none d-lg-inline ms-2 student-name-display">
+                    Siswa
+                </span>
+
+                <button onclick="handleLogout()" class="btn btn-food-outline btn-sm ms-1" title="Keluar">
+                    <i class="bi bi-box-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container py-4">
+
+    <!-- Tab Contents Container -->
+    <div class="tab-content" id="siswaTabsContent">
+
+        <!-- TAB 1: KATALOG MENU -->
+        <div class="tab-pane fade show active" id="katalog-pane">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div>
+                    <h3 class="fw-bold mb-1 text-dark">Menu Makanan & Minuman Kantin</h3>
+                    <p class="text-muted small mb-0">Pilih porsi makanan favoritmu dan pesan langsung dari kelas.</p>
+                </div>
+
+                <div class="input-group input-group-sm" style="max-width: 260px;">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="siswaSearchInput" class="form-control border-start-0 ps-0" placeholder="Cari makanan..." onkeyup="filterSiswaSearch()">
+                </div>
+            </div>
+
+            <!-- Category Filter Strip -->
+            <div class="d-flex gap-2 overflow-auto pb-3 mb-4" id="siswaCategoryFilters">
+                <!-- Populated dynamically -->
+            </div>
+
+            <!-- Grid Produk -->
+            <div class="row g-4" id="siswaProductGrid">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+
+        <!-- TAB 2: RIWAYAT PESANAN -->
+        <div class="tab-pane fade" id="riwayat-pane">
+            <div class="mb-4">
+                <h3 class="fw-bold mb-1 text-dark">Riwayat Pemesanan Anda</h3>
+                <p class="text-muted small">Pantau status pemrosesan makanan di dapur kantin secara real-time.</p>
+            </div>
+
+            <div id="siswaOrdersContainer" style="max-width: 800px;" class="mx-auto">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<!-- MODAL KERANJANG -->
+<div class="modal fade" id="cartModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-bottom py-3">
+                <h5 class="modal-title fw-bold text-dark"><i class="bi bi-cart3 me-2 text-primary"></i>Keranjang Belanja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" id="cart-items-container">
+                <!-- Populated dynamically by JS -->
+            </div>
+            <div class="modal-footer border-top bg-light p-3 d-flex justify-content-between">
+                <div>
+                    <small class="text-muted d-block">Subtotal Belanja:</small>
+                    <span class="fs-4 fw-bold text-primary" id="cart-total-price">Rp 0</span>
+                </div>
+                <button type="button" class="btn btn-food-primary rounded-3 px-4" id="btn-to-payment" data-bs-toggle="modal" data-bs-target="#paymentModal" disabled>
+                    Lanjut Pembayaran <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL METODE PEMBAYARAN -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-bottom py-3">
+                <h5 class="modal-title fw-bold text-dark"><i class="bi bi-credit-card me-2 text-success"></i>Pilih Metode Pembayaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-info border-0 rounded-3 mb-4">
+                    <small class="fw-semibold"><i class="bi bi-info-circle me-1"></i> Total Bayar yang harus diselesaikan:</small>
+                    <div class="fs-3 fw-bold text-dark mt-1" id="payment-total-summary">Rp 0</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark mb-2">Metode Pembayaran:</label>
+
+                    <label class="payment-option-card d-flex align-items-start p-3 rounded-4 mb-3 border cursor-pointer">
+                        <input class="form-check-input mt-1 me-3 flex-shrink-0" type="radio" name="metode_pembayaran" id="bayar_tunai" value="tunai" checked onclick="toggleQRISDisplay(false)">
+                        <div>
+                            <strong class="d-block text-dark fs-6 mb-1"><i class="bi bi-cash-stack text-success me-2"></i>Tunai di Kasir Kantin</strong>
+                            <small class="text-secondary d-block">Bayar langsung dengan uang pas saat mengambil makanan di konter.</small>
+                        </div>
+                    </label>
+
+                    <label class="payment-option-card d-flex align-items-start p-3 rounded-4 border cursor-pointer">
+                        <input class="form-check-input mt-1 me-3 flex-shrink-0" type="radio" name="metode_pembayaran" id="bayar_qris" value="qris" onclick="toggleQRISDisplay(true)">
+                        <div>
+                            <strong class="d-block text-dark fs-6 mb-1"><i class="bi bi-qr-code-scan text-primary me-2"></i>QRIS Cashless (Instant)</strong>
+                            <small class="text-secondary d-block">Scan QRIS pakai GoPay, OVO, ShopeePay, DANA, atau M-Banking.</small>
+                        </div>
+                    </label>
+                </div>
+
+                <div id="qrisContainer" class="text-center p-3 border rounded-3 bg-light d-none">
+                    <small class="fw-bold text-primary d-block mb-2">SCAN QRIS KANTINKU UKK</small>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=KANTINKU-PAYMENT-SIMULATION" class="img-fluid rounded border shadow-sm mb-2" style="max-width: 160px;" alt="QRIS Code">
+                    <small class="d-block text-muted">Aplikasi akan otomatis mengonfirmasi status pembayaran sebagai <strong>LUNAS</strong>.</small>
+                </div>
+            </div>
+            <div class="modal-footer border-top bg-light p-3">
+                <button type="button" class="btn btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#cartModal">Kembali</button>
+                <button type="button" class="btn btn-success rounded-3 px-4 fw-bold" onclick="processSiswaCheckout()">
+                    <i class="bi bi-check-circle me-1"></i> Konfirmasi & Pesan Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initSiswaPortal();
+    });
+
+    function toggleQRISDisplay(show) {
+        const container = document.getElementById('qrisContainer');
+        if (show) container.classList.remove('d-none');
+        else container.classList.add('d-none');
+    }
+
+    function filterSiswaSearch() {
+        const query = document.getElementById('siswaSearchInput')?.value.toLowerCase().trim() || '';
+        const cards = document.querySelectorAll('.product-item-card');
+        cards.forEach(c => {
+            const name = c.dataset.name || '';
+            if (name.includes(query)) {
+                c.style.display = 'block';
+            } else {
+                c.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>
