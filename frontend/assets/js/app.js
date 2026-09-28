@@ -59,6 +59,16 @@ let currentCart = {};
 
 // --- AUTH GUARD & HEADER SETUP ---
 async function initAuthHeader(pageRoleRequired = null) {
+    if (!KantinAPI.isBackendEnabled()) {
+        if (!pageRoleRequired) return null;
+        return {
+            id: null,
+            username: '',
+            nama_lengkap: '',
+            role: pageRoleRequired === 'any' ? null : pageRoleRequired
+        };
+    }
+
     const user = await KantinAPI.getCurrentUser();
     
     // Page Protection
@@ -215,7 +225,7 @@ async function initSiswaPortal() {
     // Load Data
     const categories = await KantinAPI.getCategories();
     const products = await KantinAPI.getProducts();
-    const myOrders = await KantinAPI.getUserOrders(user.id);
+    const myOrders = await KantinAPI.getUserOrders();
 
     // Populate Student Profile Header
     document.querySelectorAll('.student-name-display').forEach(el => el.innerText = user.nama_lengkap);
@@ -403,10 +413,20 @@ function syncStockButtons() {
 }
 
 async function processSiswaCheckout() {
-    const user = window.kantinStore.getCurrentUser();
+    if (!KantinAPI.isBackendEnabled()) {
+        alert('Backend PHP belum dihubungkan.');
+        return;
+    }
+
     const keys = Object.keys(currentCart);
     if (!keys.length) {
         alert('Keranjang Anda kosong!');
+        return;
+    }
+
+    const user = await KantinAPI.getCurrentUser();
+    if (!user) {
+        window.location.href = '../auth/login.php?notice=login_required';
         return;
     }
 
@@ -417,7 +437,7 @@ async function processSiswaCheckout() {
     }));
 
     try {
-        const order = await KantinAPI.createOrder(user.id, orderItems, metode);
+        const order = await KantinAPI.createOrder(orderItems, metode);
         currentCart = {};
         updateCartUI();
 
