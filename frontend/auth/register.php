@@ -85,7 +85,6 @@
 <!-- Bootstrap 5 JS Bundle CDN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="../assets/js/data.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/app.js"></script>
 
@@ -97,13 +96,18 @@
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
-        const res = await KantinAPI.register(username, password, nama, noHp);
-        if (res.success) {
-            alert('Pendaftaran akun berhasil! Silakan login.');
-            window.location.href = 'login.php';
-        } else {
+        try {
+            const res = await KantinAPI.register(username, password, nama, noHp);
+            if (res.success) {
+                alert('Pendaftaran akun berhasil! Silakan login.');
+                window.location.href = 'login.php';
+                return;
+            }
             document.getElementById('alertError').classList.remove('d-none');
-            document.getElementById('errorText').innerText = res.message;
+            document.getElementById('errorText').innerText = res.message || 'Pendaftaran gagal.';
+        } catch (error) {
+            document.getElementById('alertError').classList.remove('d-none');
+            document.getElementById('errorText').innerText = error.message;
         }
     }
 </script>

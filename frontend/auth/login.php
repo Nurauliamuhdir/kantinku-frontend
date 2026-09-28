@@ -38,16 +38,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
 
-                    <!-- Quick Role Fill Pills for Evaluation -->
-                    <div class="mb-4 text-center">
-                        <small class="text-muted d-block mb-2 fw-semibold">Quick Login Demonstrasi Role:</small>
-                        <div class="d-flex justify-content-center gap-2" role="group">
-                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold" onclick="fillQuickLogin('siswa', 'password123')">🧑 Siswa</button>
-                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" onclick="fillQuickLogin('petugas', 'password123')">🧑‍🍳 Petugas</button>
-                            <button type="button" class="btn btn-sm btn-outline-warning text-dark rounded-pill px-3 fw-bold" onclick="fillQuickLogin('admin', 'password123')">🔑 Admin</button>
-                        </div>
-                    </div>
-
                     <form id="loginForm" onsubmit="handleLoginSubmit(event)">
                         <div class="mb-3">
                             <label for="username" class="form-label fw-semibold">Username</label>
@@ -89,7 +79,6 @@
     <!-- Bootstrap 5 JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="../assets/js/data.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/app.js"></script>
 
@@ -108,22 +97,22 @@
             }
         });
 
-        function fillQuickLogin(user, pass) {
-            document.getElementById('username').value = user;
-            document.getElementById('password').value = pass;
-        }
-
         async function handleLoginSubmit(e) {
             e.preventDefault();
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
 
-            const res = await KantinAPI.login(u, p);
-            if (res.success) {
-                redirectUserByRole(res.user.role);
-            } else {
+            try {
+                const res = await KantinAPI.login(u, p);
+                if (res.success) {
+                    redirectUserByRole(res.user.role);
+                    return;
+                }
                 document.getElementById('alertError').classList.remove('d-none');
-                document.getElementById('errorText').innerText = res.message;
+                document.getElementById('errorText').innerText = res.message || 'Username atau password tidak valid.';
+            } catch (error) {
+                document.getElementById('alertError').classList.remove('d-none');
+                document.getElementById('errorText').innerText = error.message;
             }
         }
 

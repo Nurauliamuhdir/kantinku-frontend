@@ -1,20 +1,49 @@
-/**
- * KantinKu API Wrapper (Pure Frontend & PHP REST API Bridge)
- * Configured to work in Client-Side Mock mode, and seamlessly switches to PHP API endpoints.
- */
+/** Frontend client for the PHP API. */
+const BACKEND_API_ENABLED = false;
+const API_BASE_URL = new URL('../../../backend/api/', document.currentScript.src);
 
-const USE_MOCK_API = true; // Set to false when connecting to PHP REST API backend
+async function apiRequest(path, options = {}) {
+    if (!BACKEND_API_ENABLED) {
+        throw new Error('Backend PHP belum dihubungkan.');
+    }
+
+    let response;
+    try {
+        response = await fetch(new URL(path, API_BASE_URL), {
+            credentials: 'same-origin',
+            headers: {
+                Accept: 'application/json',
+                ...(options.body ? { 'Content-Type': 'application/json' } : {})
+            },
+            ...options
+        });
+    } catch (error) {
+        throw new Error('Tidak dapat terhubung ke server PHP.');
+    }
+
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
+        throw new Error(data?.message || `Permintaan gagal (HTTP ${response.status}).`);
+    }
+    if (data === null) {
+        throw new Error('Respons server bukan JSON yang valid.');
+    }
+    return data;
+}
+
+function jsonBody(data) {
+    return JSON.stringify(data);
+}
 
 const KantinAPI = {
-    // --- AUTH ---
+    isBackendEnabled() {
+        return BACKEND_API_ENABLED;
+    },
+
     async getCurrentUser() {
-        if (USE_MOCK_API) {
-            return window.kantinStore.getCurrentUser();
-        }
+        if (!BACKEND_API_ENABLED) return null;
         try {
-            const res = await fetch('../../backend/api/auth.php?action=check_session');
-            if (!res.ok) return null;
-            const data = await res.json();
+            const data = await apiRequest('auth.php?action=check_session');
             return data.user || null;
         } catch (error) {
             return null;
@@ -22,147 +51,99 @@ const KantinAPI = {
     },
 
     async login(username, password) {
-        if (USE_MOCK_API) {
-            return window.kantinStore.login(username, password);
+        if (!BACKEND_API_ENABLED) {
+            return { success: false, message: 'Backend PHP belum dihubungkan.' };
         }
-        const res = await fetch('../../backend/api/auth.php?action=login', {
+        return apiRequest('auth.php?action=login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+            body: jsonBody({ username, password })
         });
-        return await res.json();
     },
 
     async register(username, password, nama_lengkap, no_hp) {
-        if (USE_MOCK_API) {
-            return window.kantinStore.register(username, password, nama_lengkap, no_hp);
+        if (!BACKEND_API_ENABLED) {
+            return { success: false, message: 'Backend PHP belum dihubungkan.' };
         }
-        const res = await fetch('../../backend/api/auth.php?action=register', {
+        return apiRequest('auth.php?action=register', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password, nama_lengkap, no_hp })
+            body: jsonBody({ username, password, nama_lengkap, no_hp })
         });
-        return await res.json();
     },
 
     async logout() {
-        if (USE_MOCK_API) {
-            window.kantinStore.logout();
-            return { success: true };
-        }
-        await fetch('../../backend/api/auth.php?action=logout');
-        return { success: true };
+        if (!BACKEND_API_ENABLED) return { success: true };
+        return apiRequest('auth.php?action=logout', { method: 'POST' });
     },
 
-    // --- CATEGORIES ---
     async getCategories() {
-        if (USE_MOCK_API) {
-            return window.kantinStore.getCategories();
-        }
-        const res = await fetch('../../backend/api/kategori.php?action=list');
-        return await res.json();
+        if (!BACKEND_API_ENABLED) return [];
+        return apiRequest('kategori.php?action=list');
     },
 
     async addCategory(nama_kategori) {
-        if (USE_MOCK_API) {
-            return window.kantinStore.addCategory(nama_kategori);
-        }
-        const res = await fetch('../../backend/api/kategori.php?action=create', {
+        if (!BACKEND_API_ENABLED) return { success: false, message: 'Backend PHP belum dihubungkan.' };
+        return apiRequest('kategori.php?action=create', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nama_kategori })
+            body: jsonBody({ nama_kategori })
         });
-        return await res.json();
     },
 
     async deleteCategory(id) {
-        if (USE_MOCK_API) {
-            window.kantinStore.deleteCategory(id);
-            return { success: true };
-        }
-        const res = await fetch(`../../backend/api/kategori.php?action=delete&id=${id}`, { method: 'DELETE' });
-        return await res.json();
+        if (!BACKEND_API_ENABLED) return { success: false, message: 'Backend PHP belum dihubungkan.' };
+        const query = new URLSearchParams({ action: 'delete', id: String(id) });
+        return apiRequest(`kategori.php?${query}`, { method: 'DELETE' });
     },
 
-    // --- PRODUCTS ---
     async getProducts() {
-        if (USE_MOCK_API) {
-            return window.kantinStore.getProducts();
-        }
-        const res = await fetch('../../backend/api/produk.php?action=list');
-        return await res.json();
+        if (!BACKEND_API_ENABLED) return [];
+        return apiRequest('produk.php?action=list');
     },
 
     async saveProduct(productData) {
-        if (USE_MOCK_API) {
-            window.kantinStore.saveProduct(productData);
-            return { success: true };
-        }
+        if (!BACKEND_API_ENABLED) return { success: false, message: 'Backend PHP belum dihubungkan.' };
         const action = productData.id ? 'update' : 'create';
-        const res = await fetch(`../../backend/api/produk.php?action=${action}`, {
+        return apiRequest(`produk.php?action=${action}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productData)
+            body: jsonBody(productData)
         });
-        return await res.json();
     },
 
     async deleteProduct(id) {
-        if (USE_MOCK_API) {
-            window.kantinStore.deleteProduct(id);
-            return { success: true };
-        }
-        const res = await fetch(`../../backend/api/produk.php?action=delete&id=${id}`, { method: 'DELETE' });
-        return await res.json();
+        if (!BACKEND_API_ENABLED) return { success: false, message: 'Backend PHP belum dihubungkan.' };
+        const query = new URLSearchParams({ action: 'delete', id: String(id) });
+        return apiRequest(`produk.php?${query}`, { method: 'DELETE' });
     },
 
-    // --- ORDERS ---
     async getOrders() {
-        if (USE_MOCK_API) {
-            return window.kantinStore.getOrders();
-        }
-        const res = await fetch('../../backend/api/pesanan.php?action=all_orders');
-        return await res.json();
+        if (!BACKEND_API_ENABLED) return [];
+        return apiRequest('pesanan.php?action=all_orders');
     },
 
-    async getUserOrders(userId) {
-        if (USE_MOCK_API) {
-            return window.kantinStore.getUserOrders(userId);
-        }
-        const res = await fetch(`../../backend/api/pesanan.php?action=user_orders&user_id=${userId}`);
-        return await res.json();
+    async getUserOrders() {
+        if (!BACKEND_API_ENABLED) return [];
+        return apiRequest('pesanan.php?action=user_orders');
     },
 
     async getOrderById(id) {
-        if (USE_MOCK_API) {
-            return window.kantinStore.getOrderById(id);
-        }
-        const res = await fetch(`../../backend/api/pesanan.php?action=detail&id=${id}`);
-        return await res.json();
+        if (!BACKEND_API_ENABLED) return null;
+        const query = new URLSearchParams({ action: 'detail', id: String(id) });
+        return apiRequest(`pesanan.php?${query}`);
     },
 
-    async createOrder(userId, items, metodePembayaran) {
-        if (USE_MOCK_API) {
-            return window.kantinStore.createOrder(userId, items, metodePembayaran);
-        }
-        const res = await fetch('../../backend/api/pesanan.php?action=create', {
+    async createOrder(items, metodePembayaran) {
+        if (!BACKEND_API_ENABLED) throw new Error('Backend PHP belum dihubungkan.');
+        return apiRequest('pesanan.php?action=create', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, items, metodePembayaran })
+            body: jsonBody({ items, metodePembayaran })
         });
-        return await res.json();
     },
 
     async updateOrderStatus(orderId, status, statusPembayaran = null) {
-        if (USE_MOCK_API) {
-            return window.kantinStore.updateOrderStatus(orderId, status, statusPembayaran);
-        }
-        const res = await fetch('../../backend/api/pesanan.php?action=update_status', {
+        if (!BACKEND_API_ENABLED) return { success: false, message: 'Backend PHP belum dihubungkan.' };
+        return apiRequest('pesanan.php?action=update_status', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId, status, statusPembayaran })
+            body: jsonBody({ orderId, status, statusPembayaran })
         });
-        return await res.json();
     }
 };
 

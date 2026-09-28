@@ -93,7 +93,8 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-2" id="navbar-user-container">
-                    <!-- Dynamic Auth Header rendered by JS -->
+                    <a href="frontend/auth/login.php" class="btn btn-food-outline me-2">Masuk</a>
+                    <a href="frontend/auth/register.php" class="btn btn-food-primary">Daftar Akun</a>
                 </div>
             </div>
         </div>
@@ -223,7 +224,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Client-Side App Logic -->
-    <script src="frontend/assets/js/data.js"></script>
     <script src="frontend/assets/js/api.js"></script>
     <script src="frontend/assets/js/app.js"></script>
     <script>
